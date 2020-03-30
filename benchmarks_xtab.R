@@ -1,6 +1,7 @@
 library(survey)
 library(tigerstats)
 library(microbenchmark)
+library(future.apply)
 
 svy_prop <- function(row, column, data, orientation = NULL) {
   
@@ -51,7 +52,7 @@ svy_prop_2 <- function(row, column, data, orientation = NULL) {
   
   formula <- as.formula(paste0("~", column, "+", row))
   df <- as.data.frame(survey::svytable(formula, design = data, Ntotal = 100))
-  df_prop <- as.data.frame(tapply(df[, 3], list(df[, 2], df[, 1]), mean))
+  df_prop <- as.data.frame(future.apply::future_tapply(df[, 3], list(df[, 2], df[, 1]), mean))
   
   if (missing(orientation)) {
     
@@ -94,7 +95,7 @@ svy_prop_2 <- function(row, column, data, orientation = NULL) {
 
 
 
-svy_prop("discrim2a", "raceth", data = survey_object, orientation = "colwise")
+svy_prop_2("discrim2a", "raceth", data = survey_object, orientation = "colwise")
 
 
 tigerstats::colPerc(survey::svytable(~discrim2a+raceth, design = survey_object))
