@@ -111,3 +111,5 @@ mb <- microbenchmark(
 )
 
 ggplot2::autoplot(mb)
+
+
